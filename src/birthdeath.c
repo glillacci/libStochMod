@@ -2,21 +2,24 @@
  *  birthdeath.c
  *  StochMod
  *
- *	Birth-death reaction of a single species
+ *  This file is part of libStochMod.
+ *  Copyright 2011-2017 Gabriele Lillacci.
  *
- *  Created by Gabriele Lillacci in July 2012.
- *	Latest revision: July 2012.
+ *  libStochMod is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
+ *  libStochMod is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- *	This free software is available under the Creative Commons Attribution Share Alike License.
- *	You are permitted to use, redistribute and adapt this software as long as appropriate credit
- *	is given to the original author, and all derivative works are distributed under the same
- *	license or a compatible one.
- *	For more information, visit http://creativecommons.org/licenses/by-sa/3.0/ or send a letter to
- *	Creative Commons, 171 2nd Street, Suite 300, San Francisco, California, 94105, USA.
+ *  You should have received a copy of the GNU General Public License
+ *  along with libStochMod.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <stochmod.h>
+#include "../stochmod.h"
 
 
 // Number of species
@@ -34,7 +37,7 @@
 /**
  === SPECIES ===
  	 X(0)  -> A - The one and only species
- 
+
  === REACTIONS ===
  	 NULL --(k1)--> A		The birth reaction
  	 A --(k2)--> NULL		The death reaction
@@ -53,18 +56,18 @@ int birthdeath_propensity_eval (const gsl_vector * X, const gsl_vector * params,
 		printf("\n\n>> error in birthdeath_propensity_eval: vector sizes are not correct...\n");
 		return GSL_EFAILED;
 	}
-	
+
 	// Recover species from X vector
 	double X1 = gsl_vector_get (X, 0);
-	
+
 	// Recover parameters from params vector
 	double k1 = gsl_vector_get (params, 0);
 	double k2 = gsl_vector_get (params, 1);
-	
+
 	// Evaluate the propensities
 	gsl_vector_set (prop, 0, k1);
 	gsl_vector_set (prop, 1, k2*X1);
-	
+
 	// Signal that computation was completed successfully
 	return GSL_SUCCESS;
 }
@@ -81,25 +84,25 @@ int birthdeath_state_update (gsl_vector * X, size_t rxnid)
 		printf("\n\n>> error in birthdeath_state_update: state vector size is not correct...\n");
 		return GSL_EFAILED;
 	}
-	
+
 	// Check that reaction id is correct
 	if (rxnid >= R)
 	{
 		printf("\n\n>> error in birthdeath_state_update: reaction id is not correct...\n");
 		return GSL_EFAILED;
 	}
-	
+
 	// Update the state vector according to which reaction fired
 	switch (rxnid) {
 		case 0:
 			gsl_vector_set (X, 0, gsl_vector_get (X, 0) + 1);
 			break;
-			
+
 		case 1:
 			gsl_vector_set (X, 0, gsl_vector_get (X, 0) - 1);
 			break;
 	}
-	
+
 	// Signal that computation was completed correctly
 	return GSL_SUCCESS;
 }
@@ -116,10 +119,10 @@ int birthdeath_initial_conditions (gsl_vector * X0, const gsl_rng * r)
 		printf("\n\n>> error in birthdeath_state_update: initial state vector size is not correct...\n");
 		return GSL_EFAILED;
 	}
-	
+
 	// Sample new initial state
 	gsl_vector_set (X0, 0, gsl_rng_uniform_int (r, 11));
-	
+
 	// Signal that computation was completed correctly
 	return GSL_SUCCESS;
 }
@@ -163,4 +166,3 @@ void birthdeath_mod_setup (stochmod * model)
 	model->nout = P;
 	model->name = "Birth-Death process of a single chemical species (BIRTHDEATH)";
 }
-

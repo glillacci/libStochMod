@@ -5,19 +5,24 @@
  *	Lac-GFP construct model v6
  *	Model with GFP maturation
  *
- *  Created by Gabriele Lillacci in August 2012.
- *	Latest revision: August 2012.
+ *  This file is part of libStochMod.
+ *  Copyright 2011-2017 Gabriele Lillacci.
  *
+ *  libStochMod is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
- *	This free software is available under the Creative Commons Attribution Share Alike License.
- *	You are permitted to use, redistribute and adapt this software as long as appropriate credit
- *	is given to the original author, and all derivative works are distributed under the same
- *	license or a compatible one.
- *	For more information, visit http://creativecommons.org/licenses/by-sa/3.0/ or send a letter to
- *	Creative Commons, 171 2nd Street, Suite 300, San Francisco, California, 94105, USA.
+ *  libStochMod is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with libStochMod.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <stochmod.h>
+#include "../stochmod.h"
 
 
 /**
@@ -306,4 +311,3 @@ void lacgfp6_mod_setup (stochmod * model)
 	model->nout = 1;
 	model->name = "Lac-GFP construct model v6 (LACGFP6)";
 }
-

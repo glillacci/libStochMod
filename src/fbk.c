@@ -2,21 +2,24 @@
  *  fbk.c
  *  StochMod
  *
- *	Simple feedback loop model
+ *  This file is part of libStochMod.
+ *  Copyright 2011-2017 Gabriele Lillacci.
  *
- *  Created by Gabriele Lillacci in September 2012.
- *	Latest revision: September 2012.
+ *  libStochMod is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
+ *  libStochMod is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- *	This free software is available under the Creative Commons Attribution Share Alike License.
- *	You are permitted to use, redistribute and adapt this software as long as appropriate credit
- *	is given to the original author, and all derivative works are distributed under the same
- *	license or a compatible one.
- *	For more information, visit http://creativecommons.org/licenses/by-sa/3.0/ or send a letter to
- *	Creative Commons, 171 2nd Street, Suite 300, San Francisco, California, 94105, USA.
+ *  You should have received a copy of the GNU General Public License
+ *  along with libStochMod.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <stochmod.h>
+#include "../stochmod.h"
 
 // Number of species
 #define N 4
@@ -49,6 +52,8 @@
 	reaction 7.		M --(k7)--> NULL		Degradation of regulated species
 	reaction 8.		M --(k8)--> M + P		Production of reporter gene
 	reaction 9.		P --(k9)--> NULL		Degradation of reporter gene
+
+	*/
 
 
 /**
@@ -222,4 +227,3 @@ void fbk_mod_setup (stochmod * model)
 	model->nout = P;
 	model->name = "Feedback loop (FBK)";
 }
-

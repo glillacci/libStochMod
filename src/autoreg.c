@@ -2,21 +2,24 @@
  *  autoreg.c
  *  StochMod
  *
- *	Stochastic gene autoregulation model
+ *  This file is part of libStochMod.
+ *  Copyright 2011-2017 Gabriele Lillacci.
  *
- *  Created by Gabriele Lillacci in June 2011.
- *	Latest revision: June 2011.
+ *  libStochMod is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
+ *  libStochMod is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- *	This free software is available under the Creative Commons Attribution Share Alike License.
- *	You are permitted to use, redistribute and adapt this software as long as appropriate credit
- *	is given to the original author, and all derivative works are distributed under the same
- *	license or a compatible one.
- *	For more information, visit http://creativecommons.org/licenses/by-sa/3.0/ or send a letter to
- *	Creative Commons, 171 2nd Street, Suite 300, San Francisco, California, 94105, USA.
+ *  You should have received a copy of the GNU General Public License
+ *  along with libStochMod.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <stochmod.h>
+#include "../stochmod.h"
 
 
 /**
@@ -26,7 +29,7 @@
  % X(2)  -> m - mRNA
  % X(3)  -> p - protein
  % X(4)  -> pp - phospho protein
- 
+
  === REACTIONS ===
   */
 
@@ -43,14 +46,14 @@ int autoreg_propensity_eval (const gsl_vector * X, const gsl_vector * params, gs
 		printf("\n\n>> error in autoreg_propensity_eval: vector sizes are not correct...\n");
 		return GSL_EFAILED;
 	}
-	
+
 	// Recover species from X vector
 	double X1 = gsl_vector_get (X, 0);
 	double X2 = gsl_vector_get (X, 1);
 	double X3 = gsl_vector_get (X, 2);
 	double X4 = gsl_vector_get (X, 3);
 	double X5 = gsl_vector_get (X, 4);
-	
+
 	// Recover parameters from params vector
 	double k1 = gsl_vector_get (params, 0);
 	double k2 = gsl_vector_get (params, 1);
@@ -61,7 +64,7 @@ int autoreg_propensity_eval (const gsl_vector * X, const gsl_vector * params, gs
 	double k7 = gsl_vector_get (params, 6);
 	double k8 = gsl_vector_get (params, 7);
 	double k9 = gsl_vector_get (params, 8);
-	
+
 	// Evaluate the propensities
 	gsl_vector_set (prop, 0, k1*X1*X5);
 	gsl_vector_set (prop, 1, k2*X2);
@@ -72,7 +75,7 @@ int autoreg_propensity_eval (const gsl_vector * X, const gsl_vector * params, gs
 	gsl_vector_set (prop, 6, k7*X4);
 	gsl_vector_set (prop, 7, k8*X4/(1+X4));
 	gsl_vector_set (prop, 8, k9*X5);
-	
+
 	// Signal that computation was completed successfully
 	return GSL_SUCCESS;
 }
@@ -89,14 +92,14 @@ int autoreg_state_update (gsl_vector * X, size_t rxnid)
 		printf("\n\n>> error in autoreg_state_update: state vector size is not correct...\n");
 		return GSL_EFAILED;
 	}
-	
+
 	// Check that reaction id is correct
 	if (rxnid>=9)
 	{
 		printf("\n\n>> error in autoreg_state_update: reaction id is not correct...\n");
 		return GSL_EFAILED;
 	}
-	
+
 	// Update the state vector according to which reaction fired
 	switch (rxnid) {
 		case 0:
@@ -104,45 +107,45 @@ int autoreg_state_update (gsl_vector * X, size_t rxnid)
 			gsl_vector_set (X, 1, gsl_vector_get (X, 1) + (1));
 			gsl_vector_set (X, 4, gsl_vector_get (X, 4) + (-1));
 			break;
-			
+
 		case 1:
 			gsl_vector_set (X, 0, gsl_vector_get (X, 0) + (1));
 			gsl_vector_set (X, 1, gsl_vector_get (X, 1) + (-1));
 			gsl_vector_set (X, 4, gsl_vector_get (X, 4) + (1));
 			break;
-			
+
 		case 2:
 			gsl_vector_set (X, 2, gsl_vector_get (X, 2) + (1));
 			break;
-			
+
 		case 3:
 			gsl_vector_set (X, 2, gsl_vector_get (X, 2) + (1));
 			break;
-			
+
 		case 4:
 			gsl_vector_set (X, 2, gsl_vector_get (X, 2) + (-1));
 			break;
-			
+
 		case 5:
 			gsl_vector_set (X, 3, gsl_vector_get (X, 3) + (1));
 			break;
-			
+
 		case 6:
 			gsl_vector_set (X, 3, gsl_vector_get (X, 3) + (-1));
 			break;
-			
+
 		case 7:
 			gsl_vector_set (X, 3, gsl_vector_get (X, 3) + (-1));
 			gsl_vector_set (X, 4, gsl_vector_get (X, 4) + (1));
 			break;
-			
+
 		case 8:
 			gsl_vector_set (X, 3, gsl_vector_get (X, 3) + (1));
 			gsl_vector_set (X, 4, gsl_vector_get (X, 4) + (-1));
 			break;
-			
+
 	}
-	
+
 	// Signal that computation was completed correctly
 	return GSL_SUCCESS;
 }
@@ -159,14 +162,14 @@ int autoreg_initial_conditions (gsl_vector * X0, const gsl_rng * r)
 		printf("\n\n>> error in autoreg_state_update: initial state vector size is not correct...\n");
 		return GSL_EFAILED;
 	}
-	
+
 	// Sample new initial state
 	gsl_vector_set (X0, 0, gsl_rng_uniform_int (r, 3));
 	gsl_vector_set (X0, 1, 2 - gsl_vector_get (X0, 0));
 	gsl_vector_set (X0, 2, gsl_rng_uniform_int (r, 21));
 	gsl_vector_set (X0, 3, gsl_rng_uniform_int (r, 201));
 	gsl_vector_set (X0, 4, gsl_rng_uniform_int (r, 21));
-	
+
 	// Signal that computation was completed correctly
 	return GSL_SUCCESS;
 }
@@ -187,4 +190,3 @@ void autoreg_mod_setup (stochmod * model)
 	model->nout = 1;
 	model->name = "Stochastic Gene Autoregulation Model (AUTOREG)";
 }
-
